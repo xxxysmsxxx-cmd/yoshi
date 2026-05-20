@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資産クラス戦略ガイド｜FINOVATE GROUP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lato:wght@400;700;900&display=swap');
+
+:root {
+  --navy: #0D1B3E;
+  --navy2: #162347;
+  --gold: #C9A84C;
+  --gold-lt: #F2DFA0;
+  --light: #F5F7FA;
+  --border: #DDE1EC;
+  --text: #1A1A2E;
+  --muted: #6B7280;
+  --green: #0E6E45;
+  --red: #B82929;
+  --amber: #9A6200;
+  --blue: #1A4F9C;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--light);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--navy);
+  border-bottom: 3px solid var(--gold);
+  padding: 0 24px;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 36px; height: 36px; background: var(--gold);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  font-family: 'Lato', sans-serif; font-weight: 900; font-size: 16px; color: var(--navy);
+}
+.logo-text { color: white; font-weight: 700; font-size: 15px; line-height: 1.3; }
+.logo-sub { color: var(--gold-lt); font-size: 10px; font-weight: 400; }
+.header-badge {
+  background: rgba(201,168,76,0.15); border: 1px solid var(--gold);
+  color: var(--gold-lt); font-size: 11px; padding: 4px 12px; border-radius: 20px;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, #1e2d5a 100%);
+  padding: 48px 24px 40px;
+  text-align: center;
+  border-bottom: 1px solid rgba(201,168,76,0.3);
+}
+.hero h1 {
+  font-family: 'Lato', sans-serif; font-weight: 900;
+  font-size: clamp(24px, 5vw, 42px); color: white; margin-bottom: 10px;
+}
+.hero h1 span { color: var(--gold); }
+.hero p { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 28px; }
+.hero-stats {
+  display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 10px; padding: 12px 20px; text-align: center;
+}
+.stat-num { font-family: 'Lato', sans-serif; font-weight: 900; font-size: 22px; color: var(--gold); }
+.stat-label { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+/* ── MAIN LAYOUT ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 32px 16px 60px; }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
+  background: white; border-radius: 12px; padding: 12px;
+  border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.filter-bar label { font-size: 11px; color: var(--muted); font-weight: 500; align-self: center; margin-right: 4px; }
+.filter-btn {
+  padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--light); font-size: 12px; cursor: pointer;
+  transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif;
+  color: var(--text); font-weight: 500;
+}
+.filter-btn:hover { border-color: var(--navy); color: var(--navy); }
+.filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+/* ── GRID ── */
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px; margin-bottom: 28px;
+}
+.chip {
+  border-radius: 10px; border: 1.5px solid var(--border);
+  background: white; padding: 12px 10px; cursor: pointer;
+  transition: all 0.18s; position: relative; overflow: hidden;
+}
+.chip::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--chip-color, var(--border));
+  transition: width 0.18s;
+}
+.chip:hover { border-color: var(--chip-color); box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.chip:hover::before { width: 6px; }
+.chip.active { border-color: var(--chip-color); background: var(--navy); }
+.chip.active .chip-name { color: white; }
+.chip.active .chip-risk, .chip.active .chip-ret { color: rgba(255,255,255,0.6); }
+.chip-risk { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+.chip-name { font-size: 12px; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 6px; }
+.chip-ret { font-size: 10px; color: var(--muted); }
+.chip-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.chip-bar-fill { height: 100%; border-radius: 2px; background: var(--chip-color); transition: width 0.3s; }
+
+/* ── DETAIL PANEL ── */
+.detail-panel {
+  background: white; border-radius: 16px; border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden;
+  display: none; animation: slideIn 0.25s ease;
+}
+.detail-panel.show { display: block; }
+@keyframes slideIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.panel-header {
+  background: var(--navy); padding: 20px 24px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  border-bottom: 3px solid var(--panel-color, var(--gold));
+  flex-wrap: wrap;
+}
+.panel-title { color: white; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.panel-sub { color: rgba(255,255,255,0.6); font-size: 12px; }
+.panel-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.badge {
+  font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+  border: 1px solid;
+}
+.badge-risk { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2); }
+.badge-ret { background: rgba(201,168,76,0.2); color: var(--gold-lt); border-color: rgba(201,168,76,0.3); }
+
+.panel-body { padding: 24px; }
+
+.sections {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+@media (max-width: 640px) { .sections { grid-template-columns: 1fr; } }
+
+.section {
+  border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+  background: var(--light);
+}
+.section.full { grid-column: 1 / -1; }
+.section-label {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.section-body { font-size: 13px; line-height: 1.7; color: var(--text); }
+
+.corr-item { margin-bottom: 8px; }
+.corr-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; display: flex; justify-content: space-between; }
+.corr-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.corr-fill { height: 100%; border-radius: 3px; }
+
+.yen-box {
+  background: #FFF8E7; border: 1px solid #F0D080; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; color: #7A5200; line-height: 1.7; margin-top: 8px;
+}
+.signal-box {
+  background: #F0F7FF; border: 1px solid #B8D4F0; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; color: var(--blue); line-height: 1.7; margin-top: 8px;
+}
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.tag { font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 500; }
+.tag-up { background: #E8F5EF; color: var(--green); border: 1px solid #B8E0CC; }
+.tag-down { background: #FDEEEE; color: var(--red); border: 1px solid #F0C8C8; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center; padding: 48px 24px; color: var(--muted);
+  background: white; border-radius: 16px; border: 2px dashed var(--border);
+}
+.empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* ── BOTTOM INFO ── */
+.info-section { margin-top: 40px; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.info-card {
+  background: white; border-radius: 12px; border: 1px solid var(--border);
+  padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.info-card h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.info-card p { font-size: 12px; line-height: 1.7; color: var(--muted); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy); border-top: 2px solid var(--gold);
+  text-align: center; padding: 20px 24px;
+  color: rgba(255,255,255,0.5); font-size: 11px; line-height: 1.8;
+}
+footer a { color: var(--gold-lt); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 500px) {
+  .asset-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-stats { gap: 12px; }
+}
+
+.section-title {
+  font-size: 16px; font-weight: 700; color: var(--navy);
+  margin-bottom: 16px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">F</div>
+    <div>
+      <div class="logo-text">FINOVATE GROUP</div>
+      <div class="logo-sub">Independent Financial Advisory | EAM / IFA</div>
+    </div>
+  </div>
+  <div class="header-badge">代理店パートナー限定</div>
+</header>
+
+<div class="hero">
+  <h1>資産クラス <span>戦略ガイド</span></h1>
+  <p>各アセットをクリックして、詳細・上下要因・円安との関係・経済シグナルを確認</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">14</div><div class="stat-label">アセットクラス</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">分析軸</div></div>
+    <div class="stat"><div class="stat-num">2026.05</div><div class="stat-label">最新版</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- フィルター -->
+  <div class="filter-bar">
+    <label>絞り込み：</label>
+    <button class="filter-btn active" data-filter="all">すべて</button>
+    <button class="filter-btn" data-filter="low">低リスク</button>
+    <button class="filter-btn" data-filter="mid">中リスク</button>
+    <button class="filter-btn" data-filter="high">高リスク</button>
+    <button class="filter-btn" data-filter="max">最高リスク</button>
+  </div>
+
+  <!-- チップグリッド -->
+  <div class="asset-grid" id="grid"></div>
+
+  <!-- 詳細パネル -->
+  <div class="detail-panel" id="detail">
+    <div class="panel-header" id="panel-header">
+      <div>
+        <div class="panel-title" id="p-title"></div>
+        <div class="panel-badges">
+          <span class="badge badge-risk" id="p-risk"></span>
+          <span class="badge badge-ret" id="p-ret"></span>
+        </div>
+        <div class="panel-sub" id="p-sub"></div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="sections">
+        <div class="section full">
+          <div class="section-label">🍎 小学生でもわかる例え話</div>
+          <div class="section-body" id="p-story"></div>
+        </div>
+        <div class="section">
+          <div class="section-label">📈 上がるとき</div>
+          <div class="section-body" id="p-up"></div>
+          <div class="tag-row" id="p-up-tags"></div>
+        </div>
+        <div class="section">
+          <div class="section-label">📉 下がるとき</div>
+          <div class="section-body" id="p-down"></div>
+          <div class="tag-row" id="p-down-tags"></div>
+        </div>
+        <div class="section full">
+          <div class="section-label">🔗 他のアセットクラスとの因果関係</div>
+          <div id="p-corr"></div>
+        </div>
+        <div class="section full">
+          <div class="section-label">💴 円安との関係</div>
+          <div class="yen-box" id="p-yen"></div>
+        </div>
+        <div class="section full">
+          <div class="section-label">🔮 経済シグナルの読み取り方</div>
+          <div class="signal-box" id="p-signal"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 空状態 -->
+  <div class="empty-state" id="empty">
+    <div class="icon">☝️</div>
+    <p>上のアセットクラスをタップして詳細を確認してください</p>
+  </div>
+
+  <!-- 経済マクロ早見表 -->
+  <div class="info-section">
+    <div class="section-title">📊 経済局面 × アセット戦略 早見表</div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🚀 景気拡大期</h3>
+        <p><strong>強いアセット：</strong>株式・ハイイールド債・REIT・コモディティ<br>
+        <strong>弱いアセット：</strong>国債・現金<br>
+        金利上昇が始まると債券から株式へ資金シフトが起こる。</p>
+      </div>
+      <div class="info-card">
+        <h3>📉 景気後退期</h3>
+        <p><strong>強いアセット：</strong>国債・金・現金・ディフェンシブ株<br>
+        <strong>弱いアセット：</strong>株式・ハイイールド債・コモディティ<br>
+        リスクオフで安全資産に資金が集中する。</p>
+      </div>
+      <div class="info-card">
+        <h3>📈 利上げ期（FRB・日銀）</h3>
+        <p><strong>強いアセット：</strong>銀行株・短期債・ドル建て資産<br>
+        <strong>弱いアセット：</strong>長期債・グロース株・REIT・新興国<br>
+        長期金利上昇で高PER銘柄から資金が逃げる。</p>
+      </div>
+      <div class="info-card">
+        <h3>💰 利下げ期（FRB・日銀）</h3>
+        <p><strong>強いアセット：</strong>長期債・グロース株・REIT・新興国・金<br>
+        <strong>弱いアセット：</strong>銀行株・短期債<br>
+        金利低下で成長資産・実物資産が有利になる。</p>
+      </div>
+      <div class="info-card">
+        <h3>💴 円安局面（現在）</h3>
+        <p><strong>有利：</strong>外貨建て資産全般・コモディティ・オフショア積立<br>
+        <strong>不利：</strong>円現金・円預金・国内REIT（金利上昇連動）<br>
+        円安＋インフレで「円の実質購買力」が継続的に低下。</p>
+      </div>
+      <div class="info-card">
+        <h3>⚠️ 地政学リスク（中東等）</h3>
+        <p><strong>強いアセット：</strong>金・原油・防衛関連株・短期国債<br>
+        <strong>弱いアセット：</strong>新興国・航空・観光・グローバル製造業<br>
+        リスク度合いと持続期間によって影響が大きく変わる。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2026年5月最新状況 -->
+  <div class="info-section" style="margin-top:32px;">
+    <div class="section-title">🗓️ 2026年5月 最新マーケット状況</div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🇺🇸 FRB（米国）</h3>
+        <p>FF金利 <strong>3.50〜3.75%</strong>（3会合連続据え置き）。新FRB議長はウォーシュ氏が就任決定。年内1〜2回の利下げが市場コンセンサス。インフレはコアPCE2.7%で目標超えが続く。</p>
+      </div>
+      <div class="info-card">
+        <h3>🇯🇵 日銀（日本）</h3>
+        <p>政策金利 <strong>0.75%</strong>（1995年以来の高水準）。6月に0.25%利上げ（→1.00%）がメインシナリオ。4月会合では3名が利上げ賛成票。長期金利は10年2.4%・15年3.5%超。</p>
+      </div>
+      <div class="info-card">
+        <h3>💴 為替（ドル円）</h3>
+        <p>4月30日に<strong>一時160円台後半</strong>と約2年ぶりの円安。政府・日銀が為替介入。構造的な円安圧力（日米金利差）は継続。年内は155〜162円レンジが想定される。</p>
+      </div>
+      <div class="info-card">
+        <h3>🛢️ 原油（WTI）</h3>
+        <p><strong>108ドル/バレル台</strong>（5月18日）。イラン情勢によるホルムズ海峡の通航量が戦前比9割超減少し供給不安が継続。日本への直撃影響大（原油輸入の約9割が中東経由）。</p>
+      </div>
+      <div class="info-card">
+        <h3>💰 金（ゴールド）</h3>
+        <p>国内<strong>26,000円/g前後</strong>と歴史的高値圏。ドル建て4,200〜4,300ドル/oz。中央銀行の金購入継続・地政学リスク・ドル不信が後押し。2026年末3万円説もあり。</p>
+      </div>
+      <div class="info-card">
+        <h3>🤖 AI・株式</h3>
+        <p>S&P500：7,400前後、NASDAQ：26,000前後。AI需要は本物だが原油高・長期金利上昇が高バリュエーション銘柄の頭を抑える。「AIの強さ」より「今いくら払うか」の局面へ移行。</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p><strong style="color:white">株式会社 FINOVATE GROUP</strong></p>
+  <p><a href="https://www.finovategroup.jp">https://www.finovategroup.jp</a></p>
+  <p style="margin-top:8px">本資料は代理店パートナー限定の教育資料です。投資勧誘を目的とするものではありません。<br>
+  掲載情報は2026年5月時点のものであり、将来の投資成果を保証するものではありません。</p>
+</footer>
+
+<script>
+const ASSETS = [
+  { id:1,  name:"現金・普通預金",         cat:"最低リスク", risk:1,  risk_group:"low",  ret:"0〜0.1%",     color:"#27AE60",
+    story:"タンスにお金をしまっておくイメージ。絶対に減らないけど、物の値段が上がると（インフレ）、実質的には損している状態です。",
+    up:"デフレ・不況・リスクオフ局面",upT:["デフレ","不況期","リスクオフ"],
+    down:"インフレ上昇・マイナス金利政策",downT:["インフレ","マイナス金利"],
+    corr:[{n:"国債",v:70,d:"正"},{n:"株式",v:-20,d:"負"},{n:"金",v:-10,d:"やや負"}],
+    yen:"円安になっても現金（円）の名目額は変わらない。ただし輸入物価上昇でインフレが進み、実質購買力は低下する。外貨預金なら円安で円換算額が増加する。",
+    signal:"現金比率が市場全体で上昇→リスクオフムード。投資家が株や債券を売って現金化している証拠。不況・金融危機の前兆シグナルになりやすい。" },
+
+  { id:2,  name:"定期預金・MMF",           cat:"低リスク",   risk:2,  risk_group:"low",  ret:"0.1〜1%",     color:"#1E8449",
+    story:"銀行に「1年間だけ使わない」と約束してお金を預けるイメージ。その代わり普通預金より少し利息がもらえる。MMFは短期国債に投資する超安全な投資信託。",
+    up:"金利上昇局面・中央銀行の利上げ",upT:["利上げ","高金利環境"],
+    down:"金利引き下げ・マイナス金利政策",downT:["利下げ","低金利"],
+    corr:[{n:"短期国債",v:80,d:"正"},{n:"株式",v:-15,d:"やや負"},{n:"現金",v:60,d:"正"}],
+    yen:"円安局面では外貨建てMMFが有利。円MMFはインフレに弱く、円安＋インフレでダブルパンチになる可能性。",
+    signal:"MMFへの資金流入増加→投資家がリスクを避けている証拠。株や債券から資金が逃避している局面を示す。" },
+
+  { id:3,  name:"先進国国債",               cat:"低〜中リスク", risk:3, risk_group:"low",  ret:"1〜4%",       color:"#2471A3",
+    story:"国にお金を貸してあげるイメージ。「10年後に返すから、その間毎年利息を払うね」という約束。国が倒産しなければ確実に返ってくる。米国債・日本国債・ドイツ国債など。",
+    up:"景気後退・金利低下・リスクオフ・株式市場の暴落",upT:["景気後退","金利低下","リスクオフ"],
+    down:"金利上昇・インフレ加速・財政悪化",downT:["利上げ","インフレ","財政赤字拡大"],
+    corr:[{n:"株式",v:-60,d:"負（逃避先）"},{n:"金",v:40,d:"正"},{n:"社債",v:70,d:"正"}],
+    yen:"外国国債（米国債など）は円安で円換算リターンが増加する。日本国債は為替影響なし。円安→日銀が利上げ→日本国債価格は下落、という連鎖に注意。",
+    signal:"長期金利低下（国債価格上昇）→景気後退・デフレ懸念のサイン。逆に長期金利急上昇→インフレ警戒・財政リスクのサイン。「逆イールド」は不況の前兆として有名。" },
+
+  { id:4,  name:"投資適格社債",             cat:"低〜中リスク", risk:4, risk_group:"low",  ret:"2〜5%",       color:"#1A6FA8",
+    story:"大企業にお金を貸すイメージ。国債より少し高い利息がもらえるけど、万が一会社が倒産したら返ってこないリスクもある。格付けが高い（BBB以上）企業の債券。",
+    up:"景気安定・低金利・企業業績好調・信用スプレッド縮小",upT:["景気安定","信用環境改善"],
+    down:"景気後退・金利上昇・企業倒産リスク上昇",downT:["景気後退","利上げ","信用収縮"],
+    corr:[{n:"国債",v:60,d:"正"},{n:"ハイイールド債",v:70,d:"正"},{n:"株式",v:30,d:"やや正"}],
+    yen:"外貨建て社債は円安で円換算リターンが増加。一方、円安→日本の輸入コスト上昇→企業業績圧迫→信用リスク上昇という間接的悪影響も。",
+    signal:"社債スプレッド（国債との金利差）が拡大→企業の信用リスクが高まっているサイン。スプレッド縮小→市場が落ち着いているサイン。リーマンショック時はスプレッドが急拡大。" },
+
+  { id:5,  name:"REIT（不動産投資信託）",   cat:"中リスク",   risk:5,  risk_group:"mid",  ret:"3〜7%",       color:"#D68910",
+    story:"みんなでお金を出し合って大きなビルやマンションを買うイメージ。家賃収入を分配してもらえる。直接不動産を買うお金がなくても、少額から投資できる。",
+    up:"金利低下・景気拡大・不動産需要増加・インフレ（実物資産）",upT:["金利低下","景気拡大","インフレ"],
+    down:"金利上昇（借入コスト増）・不動産市況悪化・景気後退",downT:["利上げ","不況","空室率上昇"],
+    corr:[{n:"株式",v:50,d:"やや正"},{n:"国債",v:-40,d:"やや負"},{n:"コモディティ",v:30,d:"やや正"}],
+    yen:"海外REIT（米国・欧州）は円安で円換算リターンが増加。国内Jリートは直接的な為替影響は少ないが、円安→インフレ→金利上昇→Jリート価格下落という連鎖リスクあり。",
+    signal:"Jリートの利回りが国債と比べて大幅上昇→不動産市況への不安サイン。逆にスプレッド縮小→不動産市場への安心感。金利上昇局面でのJリート下落は特に注目。" },
+
+  { id:6,  name:"バランス型ファンド",       cat:"中リスク",   risk:6,  risk_group:"mid",  ret:"3〜6%",       color:"#BA7D15",
+    story:"弁当箱にご飯・おかず・サラダをバランスよく詰めるイメージ。株・債券・REITなどを組み合わせて、一つが下がっても他でカバーできるように設計された投資信託。",
+    up:"穏やかな安定成長局面で分散効果を発揮。特定の局面に強いわけではない",upT:["分散効果","安定成長"],
+    down:"全資産クラス同時下落（コロナショックなど）には弱い",downT:["全面下落","相関崩壊"],
+    corr:[{n:"株式",v:60,d:"正（株の比率依存）"},{n:"国債",v:40,d:"正（債券分）"},{n:"REIT",v:30,d:"やや正"}],
+    yen:"外貨建て資産の比率によって影響が変わる。多くのバランス型は外国資産を含むため、円安局面でリターンが増加しやすい。",
+    signal:"バランス型の資金流入増加→個人投資家がリスク管理を意識し始めているサイン。日本ではiDeCo・NISAの普及でバランス型への資金流入が増加傾向にある。" },
+
+  { id:7,  name:"先進国株式",               cat:"中〜高リスク", risk:7, risk_group:"mid",  ret:"5〜10%",      color:"#E67E22",
+    story:"大きな会社の「オーナーの一部」になるイメージ。会社が成長して儲かれば株価が上がり、配当ももらえる。でも業績が悪化すれば下がる。米国S&P500・日本・欧州の優良大企業。",
+    up:"景気拡大・企業業績好調・金融緩和・低金利・AI革命などイノベーション",upT:["景気拡大","利下げ","企業業績好調","イノベーション"],
+    down:"景気後退・利上げ・地政学リスク・企業業績悪化",downT:["景気後退","利上げ","地政学リスク"],
+    corr:[{n:"社債",v:40,d:"やや正"},{n:"国債",v:-50,d:"負（逃避関係）"},{n:"コモディティ",v:30,d:"やや正"}],
+    yen:"米国株などは円安で円換算リターンが大幅増加。例：米国株が10%上昇＋円安10%→円建てで約20%のリターン。逆に円高になると目減りする両刃の剣。",
+    signal:"株式市場の上昇→景気拡大・企業業績改善のサイン。PER（株価収益率）が歴史的高水準→割高警戒。VIX指数（恐怖指数）急上昇→市場の不安感が高まっているサイン。" },
+
+  { id:8,  name:"コモディティ",             cat:"中〜高リスク", risk:8, risk_group:"mid",  ret:"3〜8%",       color:"#C0392B",
+    story:"金・原油・小麦・銅など「世界共通の実物商品」のイメージ。戦争・干ばつ・産油国の決定ひとつで価格が激変する。金は「世界共通の安全資産」として特別な地位を持つ。",
+    up:"インフレ・地政学リスク・ドル安・需要増加・供給不足",upT:["インフレ","地政学リスク","ドル安","供給不足"],
+    down:"景気後退（需要減）・ドル高・供給過剰",downT:["景気後退","ドル高","供給過剰"],
+    corr:[{n:"株式",v:20,d:"やや正（景気連動）"},{n:"国債",v:-30,d:"やや負"},{n:"金",v:60,d:"正（貴金属）"}],
+    yen:"コモディティはドル建て取引が基本。円安→円換算での購入コスト上昇→日本の輸入物価上昇（エネルギー・食料品）→インフレ直撃。一方、円安局面でのコモディティ投資は円建てリターンが増加。",
+    signal:"原油価格急上昇→インフレ圧力・企業コスト増のサイン。銅価格上昇（Dr.Copper）→世界経済の好調サイン。金価格急上昇→地政学リスク・不況懸念・ドル不信のサイン。" },
+
+  { id:9,  name:"ハイイールド債",           cat:"高リスク",   risk:9,  risk_group:"high", ret:"5〜9%",       color:"#A93226",
+    story:"格付けが低い（BB以下）企業への融資イメージ。リスクが高い分、利息は高め。「ジャンク債」とも呼ばれる。景気が良ければ高リターン、不況になると一気に危険になる。",
+    up:"景気拡大・リスクオン・信用環境改善・企業業績好調",upT:["景気拡大","リスクオン"],
+    down:"景気後退・信用収縮・デフォルト率上昇",downT:["景気後退","信用危機","デフォルト増加"],
+    corr:[{n:"株式",v:70,d:"正（景気連動）"},{n:"国債",v:-40,d:"負"},{n:"社債",v:65,d:"正"}],
+    yen:"外貨建てが多く、円安でリターン増加。ただし円安→世界的インフレ→利上げ→デフォルトリスク上昇という連鎖に注意が必要。",
+    signal:"ハイイールドスプレッド急拡大→市場がデフォルトリスクを強く意識しているサイン。景気後退の「早期警戒シグナル」として株式より先に動くことが多い。" },
+
+  { id:10, name:"新興国株式・債券",         cat:"高リスク",   risk:10, risk_group:"high", ret:"6〜12%",      color:"#922B21",
+    story:"これから成長が期待される国々（中国・インド・ブラジル・東南アジアなど）に投資するイメージ。成長が大きい分、政治リスク・通貨リスク・流動性リスクも大きい。",
+    up:"ドル安・世界経済好調・資源価格上昇・新興国の高成長",upT:["ドル安","世界景気拡大","資源高"],
+    down:"ドル高・米国利上げ・地政学リスク・政治不安",downT:["ドル高","米利上げ","政治不安"],
+    corr:[{n:"先進国株",v:70,d:"正"},{n:"コモディティ",v:50,d:"正（資源国多い）"},{n:"ドル",v:-70,d:"負"}],
+    yen:"円安→ドル高→新興国通貨安→新興国資産下落という連鎖がある。円安局面では新興国への投資は二重のリスク（円安とドル高が同時進行）になりやすい。",
+    signal:"新興国への資金流入増加→グローバルなリスクオン相場のサイン。資金流出→世界的リスクオフ、または米国利上げ懸念のサイン。アジア通貨危機（1997年）はこのパターン。" },
+
+  { id:11, name:"ヘッジファンド",           cat:"高リスク",   risk:11, risk_group:"high", ret:"5〜15%",      color:"#6E2C8D",
+    story:"プロの「運用の達人」がどんな相場でも勝とうとする特殊なファンドのイメージ。株が下がる局面でも空売りを使ってプラスにしようとする。最低投資額が高く、一般人には敷居が高い。",
+    up:"戦略によって異なる。マクロ系は相場変動が大きいほど稼ぎやすい",upT:["ボラティリティ高","市場の歪み"],
+    down:"戦略の失敗・流動性危機・規制強化",downT:["戦略失敗","流動性危機"],
+    corr:[{n:"株式",v:20,d:"戦略依存"},{n:"国債",v:10,d:"ほぼ無相関"},{n:"コモディティ",v:20,d:"やや正"}],
+    yen:"戦略によりまったく異なる。為替アービトラージを狙うファンドは円安局面でも利益を狙える。運用報告はドル建てが多く、円安でリターン増加のケースが多い。",
+    signal:"ヘッジファンドの大量解約（ゲートが発動）→流動性危機のサイン。2008年リーマンショック時に多発。ヘッジファンドの「方向感のなさ」は相場の迷走を示す。" },
+
+  { id:12, name:"プライベートエクイティ",   cat:"高リスク",   risk:12, risk_group:"high", ret:"8〜20%",      color:"#5D2C8A",
+    story:"まだ上場していない会社に投資して、育てて、高く売るイメージ。農家が苗を買って育てて高く売るようなもの。5〜10年間お金を引き出せないが、うまくいけば大きなリターンがある。",
+    up:"低金利・M&A活況・IPO市場好調・LBO（借り入れを使った買収）しやすい環境",upT:["低金利","M&A活況","IPO好調"],
+    down:"金利上昇（LBOコスト増）・景気後退・IPO市場冷え込み",downT:["利上げ","景気後退","IPO停滞"],
+    corr:[{n:"株式",v:60,d:"正（遅行して連動）"},{n:"社債",v:30,d:"やや正"},{n:"現金",v:-40,d:"負（長期拘束）"}],
+    yen:"海外PE（米欧が中心）への投資は円安で円換算リターンが増加。ただし、円安→金利上昇→LBOコスト増→PE戦略の収益性低下という間接的影響もある。",
+    signal:"PE市場の投資額増加→低金利・リスクオン環境の象徴。PE市場の停滞・ドライパウダーの積み上がり→投資機会が見当たらない、または高い不確実性を示す。" },
+
+  { id:13, name:"暗号資産（BTC・ETH等）",   cat:"最高リスク", risk:13, risk_group:"max",  ret:"-50〜+100%超", color:"#B7350D",
+    story:"インターネット上にある新しいデジタルのお金のイメージ。国が管理していないので、誰も保証してくれない。Bitcoin・Ethereumなどが有名。一夜にして価値が半分になることも、2倍になることもある。",
+    up:"規制緩和期待・機関投資家参入・ドル安・リスクオン・ETF承認",upT:["規制緩和","機関投資家参入","ドル安","リスクオン"],
+    down:"規制強化・取引所破綻・リスクオフ・金利上昇",downT:["規制強化","取引所破綻","リスクオフ","利上げ"],
+    corr:[{n:"ナスダック",v:60,d:"正（ハイリスク連動）"},{n:"金",v:20,d:"やや正"},{n:"国債",v:-50,d:"負"}],
+    yen:"ドル建てが基本のため、円安で円換算価格が上昇する。ただし暗号資産自体の変動率が極めて大きいため、為替影響は相対的に小さい。",
+    signal:"Bitcoin価格急上昇→リスクオン相場・投機熱のサイン。機関投資家の参入後、マクロ環境との連動性が増しており、以前ほど独立した動きをしなくなっている。" },
+
+  { id:14, name:"レバレッジ商品・先物",     cat:"最高リスク", risk:14, risk_group:"max",  ret:"無限大〜全損",  color:"#922B21",
+    story:"自分のお金が100万円しかないのに、1000万円分の取引をするイメージ。うまくいけば10倍の利益だが、逆に動けば全財産を失うだけでなく追加で払う義務が生じることも。FX・先物・オプション・CFDなど。",
+    up:"レバレッジ方向に相場が動けば利益拡大",upT:["相場の方向一致","ボラティリティ活用"],
+    down:"レバレッジ反対方向に動けば損失拡大・追証・強制決済",downT:["方向違い","証拠金不足","急変動"],
+    corr:[{n:"原資産",v:100,d:"正（×レバレッジ倍率）"},{n:"VIX",v:80,d:"正（高VIX=損失リスク大）"}],
+    yen:"FXそのものが為替の先物取引。円安方向にポジションを持てば利益、円高方向で損失。日本人投資家の「ミセス・ワタナベ」現象として有名。円キャリートレードも関連。",
+    signal:"先物市場のポジションが極端に偏る→相場の反転シグナルになりやすい。CFTC（米商品先物取引委員会）のポジションレポートは市場のセンチメントを読む重要指標。" },
+];
+
+function riskLabel(r) {
+  if (r<=2) return "最低リスク";
+  if (r<=4) return "低〜中リスク";
+  if (r<=6) return "中リスク";
+  if (r<=9) return "高リスク";
+  return "最高リスク";
+}
+
+let activeId = null;
+let activeFilter = "all";
+
+// グリッドを描画
+function renderGrid(filter) {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  ASSETS.filter(a => filter === "all" || a.risk_group === filter).forEach(a => {
+    const chip = document.createElement("div");
+    chip.className = "chip" + (activeId === a.id ? " active" : "");
+    chip.style.setProperty("--chip-color", a.color);
+    chip.innerHTML = `
+      <div class="chip-risk">${riskLabel(a.risk)}</div>
+      <div class="chip-name">${a.name}</div>
+      <div class="chip-ret">期待リターン ${a.ret}</div>
+      <div class="chip-bar"><div class="chip-bar-fill" style="width:${(a.risk/14)*100}%"></div></div>`;
+    chip.onclick = () => showDetail(a);
+    grid.appendChild(chip);
+  });
+}
+
+// フィルターボタン
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilter = btn.dataset.filter;
+    activeId = null;
+    document.getElementById("detail").classList.remove("show");
+    document.getElementById("empty").style.display = "";
+    renderGrid(activeFilter);
+  };
+});
+
+function corrBar(n, v, d) {
+  const abs = Math.abs(v);
+  const isPos = v >= 0;
+  const col   = isPos ? "#1A6B40" : "#C0392B";
+  const bgCol = isPos ? "#E8F5EF" : "#FDEEEE";
+  const dirText = isPos ? "一緒に動く" : "逆に動く";
+  const dirIcon = isPos ? "↑↑ 連動" : "↑↓ 逆行";
+  const barColor = isPos ? "#27AE60" : "#E74C3C";
+  const strength = abs >= 70 ? "強い" : abs >= 40 ? "中程度" : "弱い";
+  return `<div style="margin-bottom:12px;border:1px solid #E8E0CC;border-radius:8px;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:0;background:#FAFAFA;border-bottom:1px solid #E8E0CC">
+      <div style="background:${col};color:white;font-size:10px;font-weight:700;padding:6px 10px;min-width:72px;text-align:center;line-height:1.3">
+        ${dirIcon}
+      </div>
+      <div style="font-weight:700;color:#1A1A1A;font-size:12px;padding:6px 12px;flex:1">${n}</div>
+      <div style="background:${bgCol};color:${col};font-size:10px;font-weight:700;padding:6px 10px;border-left:1px solid #E8E0CC;text-align:center;min-width:60px">
+        ${strength}相関
+      </div>
+    </div>
+    <div style="padding:6px 12px 4px;font-size:11px;color:#555">${d}</div>
+    <div style="padding:0 12px 8px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:10px;color:#999;min-width:48px">連動度</span>
+      <div style="flex:1;height:6px;background:#EEE;border-radius:3px;overflow:hidden">
+        <div style="width:${abs}%;height:100%;background:${barColor};border-radius:3px"></div>
+      </div>
+      <span style="font-size:10px;color:${col};font-weight:700;min-width:32px;text-align:right">${abs}%</span>
+    </div>
+  </div>`;
+}
+
+function showDetail(a) {
+  activeId = a.id;
+  renderGrid(activeFilter);
+
+  document.getElementById("panel-header").style.setProperty("--panel-color", a.color);
+  document.getElementById("p-title").textContent = a.name;
+  document.getElementById("p-risk").textContent = `リスク: ${riskLabel(a.risk)}`;
+  document.getElementById("p-ret").textContent = `期待リターン: ${a.ret}`;
+  document.getElementById("p-sub").textContent = "";
+  document.getElementById("p-story").textContent = a.story;
+  document.getElementById("p-up").textContent = a.up;
+  document.getElementById("p-down").textContent = a.down;
+  document.getElementById("p-yen").textContent = a.yen;
+  document.getElementById("p-signal").textContent = a.signal;
+
+  const ut = document.getElementById("p-up-tags"); ut.innerHTML = "";
+  a.upT.forEach(t => { const s = document.createElement("span"); s.className="tag tag-up"; s.textContent=t; ut.appendChild(s); });
+  const dt = document.getElementById("p-down-tags"); dt.innerHTML = "";
+  a.downT.forEach(t => { const s = document.createElement("span"); s.className="tag tag-down"; s.textContent=t; dt.appendChild(s); });
+
+  document.getElementById("p-corr").innerHTML = a.corr.map(c => corrBar(c.n, c.v, c.d)).join("");
+
+  document.getElementById("detail").classList.add("show");
+  document.getElementById("empty").style.display = "none";
+
+  setTimeout(() => {
+    document.getElementById("detail").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
+}
+
+renderGrid("all");
+</script>
+</body>
+</html>
